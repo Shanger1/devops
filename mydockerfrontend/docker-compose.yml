@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
     web:
         build: 
             context: .
@@ -12,3 +11,12 @@ services:
             - /opt/app/node_modules
             - .:/opt/app
         tty: true
+
+    tests:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        volumes:
+            - /opt/app/node_modules
+            - .:/opt/app
+        command: ["yarn", "test"]
