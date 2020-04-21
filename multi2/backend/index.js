@@ -9,7 +9,8 @@ app.use(bodyParser.json());
 const redis = require('redis');
 const redisClient = redis.createClient({
     host: keys.redisHost,
-    port: keys.redisPort
+    port: keys.redisPort,
+    retry_strategy: () => 1000
 });
 
 const { Pool } = require('pg');
@@ -27,18 +28,41 @@ pgClient.query('CREATE TABLE IF NOT EXISTS results(number INT)').catch(err => co
 
 console.log(keys);
 
-app.get('/', (req, resp) => {
-    pgClient.query('SELECT * from results', (err,res) => {
-        if(err) {
-            console.log(err.stack);
-        } else {
-            resp.send(res.rows);
+app.get('/:number', (req, resp) => {
+    const number = req.params.number;
+
+    redisClient.get(number, (err, result) => {
+        if (!result) {
+            res23 = currencyFormat(number * 1.23)
+            res22 = currencyFormat(number * 1.22)
+            res8 = currencyFormat(number * 1.08)
+            res7 = currencyFormat(number * 1.07)
+            res5 = currencyFormat(number * 1.05)
+            res3 = currencyFormat(number * 1.03)
+
+            numbersResult = {
+                result23 : res23,
+                result22 : res22,
+                result8 : res8,
+                result7 : res7,
+                result5 : res5,
+                result3 : res3
+            };
+            redisClient.set(number, JSON.stringify(numbersResult));
+            resp.send(JSON.stringify(numbersResult));
         }
-    })
+        else {
+            resp.send(result);
+        };
+    });
 });
 
-app.listen(8080, err => {
-    console.log("Server listening on port 8080");
+function currencyFormat(num) {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' PLN'
+ }
+
+app.listen(4000, err => {
+    console.log("Server listening on port 4000");
 });
 
 app.get('/:number1/:number2', (req, resp) => {
