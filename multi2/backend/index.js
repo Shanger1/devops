@@ -24,7 +24,7 @@ const pgClient = new Pool({
 
 pgClient.on('error', () => console.log('No connection to PG DB'));
 
-pgClient.query('CREATE TABLE IF NOT EXISTS results(number INT)').catch(err => console.log(err));
+pgClient.query('CREATE TABLE IF NOT EXISTS results(number VARCHAR(300))').catch(err => console.log(err));
 
 console.log(keys);
 
@@ -50,6 +50,12 @@ app.get('/:number', (req, resp) => {
             };
             redisClient.set(number, JSON.stringify(numbersResult));
             resp.send(JSON.stringify(numbersResult));
+
+            pgClient.query('INSERT INTO results(number) VALUES($1)', [JSON.stringify(numbersResult)], (err, res) => {
+                if(err){
+                    console.log(err.stack);
+                };
+            })
         }
         else {
             resp.send(result);
