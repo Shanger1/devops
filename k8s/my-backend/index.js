@@ -30,7 +30,7 @@ pgClient.query('CREATE TABLE IF NOT EXISTS results(number VARCHAR(300))').catch(
 console.log(keys);
 
 const appId = uuidv4();
-const appPort = 5000;
+const appPort = 4000;
 
 app.get('/', (req, res) => {
     res.send(`[${appId}] ${keys.initMessage}`);

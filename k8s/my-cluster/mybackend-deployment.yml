@@ -15,10 +15,10 @@ spec:
             labels:
                 app: myapp-backend
                 type: backend
-        
+    
         spec:
             containers:
-                - name: my-backend-container
+                - name: mybackend-container
                   image: shanger/mybackend
 
                   env:
@@ -27,20 +27,21 @@ spec:
                     - name: REDIS_PORT
                       value: '6379'
                     - name: INIT_MESSAGE
-                      valueFrom: 
-                        configMapKeyRef: 
-                            name: myapp-config
-                            key: WELCOME_MESSAGE
+                      valueFrom:
+                          configMapKeyRef:
+                              name: myapp-config
+                              key: WELCOME_MESSAGE
                     - name: PGPASSWORD
-                      valueFrom: 
-                        secretKeyRef: 
-                            name: myapp-secret
-                            key: PGPASSWORD
-                  envFrom: 
+                      valueFrom:
+                          secretKeyRef:
+                              name: myapp-secret
+                              key: PGPASSWORD
+                  envFrom:
                     - configMapRef:
                         name: postgres-config
 
+
     replicas: 3
-    selector: 
+    selector:
         matchLabels:
             type: backend

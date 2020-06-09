@@ -15,13 +15,14 @@ spec:
             labels:
                 app: myredis
                 type: cache
-        
+    
         spec:
             containers:
                 - name: my-redis-container
                   image: redis
 
+
     replicas: 3
-    selector: 
+    selector:
         matchLabels:
             type: cache
